@@ -68,7 +68,7 @@ public class Main {
             frame.getContentPane().add(canvas);
             frame.setVisible(true);
 
-            final FPSAnimator anim = new FPSAnimator(canvas, 300, true);
+            final FPSAnimator anim = new FPSAnimator(canvas, 20, true);
             anim.start();
         });
     }
