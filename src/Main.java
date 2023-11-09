@@ -9,15 +9,6 @@ import com.jogamp.opengl.glu.GLU;
 
 
 public class Main {
-    public final static int     WIDTH = 480, HEIGHT = 300; // Width and height of screen
-    public final static boolean CUT_CORNERS = true; // Whether to cut outside corners
-    public final static boolean SHADOWS = true;
-
-    public final static double  THICKNESS = 10; // Thickness of lines
-    public final static double  GAP = 1;
-    public final static double  SCALE = 1;
-
-    public final static double  NUM_WIDTH = 50, NUM_HEIGHT = 80;
 
     public final static int[][] NUMS = { // { Top, Middle, Bottom, Top Left, Bottom Left, Top Right, Bottom Right }
             {1, 0, 1, 1, 1, 1, 1},
@@ -31,6 +22,20 @@ public class Main {
             {1, 1, 1, 1, 1, 1, 1},
             {1, 1, 0, 1, 0, 1, 1},
     };
+
+    /*
+    -----------------------------------------------------------------------
+    Configs
+    -----------------------------------------------------------------------
+     */
+
+    public final static int     WIDTH = 480, HEIGHT = 300; // Width and height of screen
+    public final static boolean CUT_CORNERS = true; // Whether to cut outside corners
+    public final static boolean SHADOWS = true;
+    public final static double  THICKNESS = 10; // Thickness of lines
+    public final static double  GAP = 1;
+    public final static double  KERNING = 10; // Distance between numbers
+    public final static double  NUM_WIDTH = 50, NUM_HEIGHT = 80;
 
     public final static float[] MAIN_COLOR_RGB = { 1.0f, 0, 0 };
     public final static float[] SHADOW_COLOR_RGB = { 0.2f, 0.2f, 0.2f };
@@ -86,7 +91,7 @@ public class Main {
             final GL2 gl = glAutoDrawable.getGL().getGL2();
             gl.glColor3f(1.0f, 0.0f, 0.0f);
 
-            drawDigit(2, gl, 20, 20);
+            drawNumber(12, gl, 20, 20);
 
             gl.glFlush();
         }
@@ -109,7 +114,7 @@ public class Main {
         Segment Rendering
         -----------------------------------------------------------------------
          */
-        private void drawTop(final GL2 gl, int xOff, int yOff){
+        private void drawTop(final GL2 gl, double xOff, double yOff){
             gl.glBegin(GL2.GL_QUADS);
 
             gl.glVertex2d(xOff+THICKNESS+GAP, yOff+GAP);
@@ -119,7 +124,7 @@ public class Main {
 
             gl.glEnd();
         }
-        private void drawMiddle(final GL2 gl, int xOff, int yOff){
+        private void drawMiddle(final GL2 gl, double xOff, double yOff){
             gl.glBegin(GL2.GL_QUADS);
 
             gl.glVertex2d(xOff+THICKNESS+GAP, yOff+NUM_HEIGHT/2.0-THICKNESS/2.0+GAP);
@@ -129,7 +134,7 @@ public class Main {
 
             gl.glEnd();
         }
-        private void drawBottom(final GL2 gl, int xOff, int yOff){
+        private void drawBottom(final GL2 gl, double xOff, double yOff){
             gl.glBegin(GL2.GL_QUADS);
 
             gl.glVertex2d(xOff+THICKNESS+GAP, yOff+NUM_HEIGHT-THICKNESS+GAP);
@@ -139,7 +144,7 @@ public class Main {
 
             gl.glEnd();
         }
-        private void drawTopLeft(final GL2 gl, int xOff, int yOff){
+        private void drawTopLeft(final GL2 gl, double xOff, double yOff){
             gl.glBegin(GL2.GL_QUADS);
 
             gl.glVertex2d(xOff+GAP, yOff+GAP+CUT);
@@ -149,7 +154,7 @@ public class Main {
 
             gl.glEnd();
         }
-        private void drawBottomLeft(final GL2 gl, int xOff, int yOff){
+        private void drawBottomLeft(final GL2 gl, double xOff, double yOff){
             gl.glBegin(GL2.GL_QUADS);
 
             gl.glVertex2d(xOff+GAP, yOff+NUM_HEIGHT/2.0+GAP);
@@ -159,7 +164,7 @@ public class Main {
 
             gl.glEnd();
         }
-        private void drawTopRight(final GL2 gl, int xOff, int yOff){
+        private void drawTopRight(final GL2 gl, double xOff, double yOff){
             gl.glBegin(GL2.GL_QUADS);
 
             gl.glVertex2d(xOff+NUM_WIDTH-THICKNESS+GAP, yOff+GAP+CUT);
@@ -169,7 +174,7 @@ public class Main {
 
             gl.glEnd();
         }
-        private void drawBottomRight(final GL2 gl, int xOff, int yOff){
+        private void drawBottomRight(final GL2 gl, double xOff, double yOff){
             gl.glBegin(GL2.GL_QUADS);
 
             gl.glVertex2d(xOff+NUM_WIDTH-THICKNESS+GAP, yOff+NUM_HEIGHT/2.0+GAP);
@@ -185,7 +190,13 @@ public class Main {
         Number Rendering
         -----------------------------------------------------------------------
          */
-        public void drawDigit(int digit, final GL2 gl, int xOff, int yOff){
+
+        public void drawNumber(int num, final GL2 gl, int xOff, int yOff){
+            drawDigit(num/10, gl, xOff, yOff);
+            drawDigit(num%10, gl, xOff+(NUM_WIDTH + KERNING), yOff);
+        }
+
+        public void drawDigit(int digit, final GL2 gl, double xOff, double yOff){
             int[] segs = NUMS[digit];
 
             for(int i = 0; i < segs.length; i++){
