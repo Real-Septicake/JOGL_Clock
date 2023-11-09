@@ -1,5 +1,5 @@
 import javax.swing.*;
-import java.util.GregorianCalendar;
+import java.time.ZonedDateTime;
 
 import com.jogamp.opengl.*;
 import com.jogamp.opengl.awt.GLCanvas;
@@ -9,7 +9,6 @@ import com.jogamp.opengl.glu.GLU;
 
 
 public class Main {
-
     public final static int[][] NUMS = { // { Top, Middle, Bottom, Top Left, Bottom Left, Top Right, Bottom Right }
             {1, 0, 1, 1, 1, 1, 1},
             {0, 0, 0, 0, 0, 1, 1},
@@ -17,7 +16,7 @@ public class Main {
             {1, 1, 1, 0, 0, 1, 1},
             {0, 1, 0, 1, 0, 1, 1},
             {1, 1, 1, 1, 0, 0, 1},
-            {0, 1, 1, 1, 1, 0, 1},
+            {1, 1, 1, 1, 1, 0, 1},
             {1, 0, 0, 0, 0, 1, 1},
             {1, 1, 1, 1, 1, 1, 1},
             {1, 1, 0, 1, 0, 1, 1},
@@ -37,7 +36,7 @@ public class Main {
     public final static boolean SHADOWS = true;
     public final static double  THICKNESS = 8; // Thickness of lines
     public final static double  GAP = 1;
-    public final static double  NUM_KERNING = 10; // Distance between numbers
+    public final static double  NUM_KERNING = 5; // Distance between numbers
     public final static double  NUM_WIDTH = 50, NUM_HEIGHT = 80;
     public static final double CUT = (CUT_CORNERS)?THICKNESS/2.0:0;
 
@@ -60,22 +59,20 @@ public class Main {
 
             GLProfile profile = GLProfile.get(GLProfile.GL2);
             GLCapabilities capabilities = new GLCapabilities(profile);
-            GLCanvas canvas = new GLCanvas(capabilities);
 
-
-            FPSAnimator anim = new FPSAnimator(10);
-            anim.add(canvas);
-            anim.start();
-
+            final GLCanvas canvas = new GLCanvas(capabilities);
             Clock c = new Clock();
             canvas.addGLEventListener(c);
+            canvas.setSize(WIDTH, HEIGHT);
 
             frame.getContentPane().add(canvas);
             frame.setVisible(true);
+
+            final FPSAnimator anim = new FPSAnimator(canvas, 300, true);
+            anim.start();
         });
     }
     private static class Clock implements GLEventListener {
-        GregorianCalendar cal = new GregorianCalendar();
 
         @Override
         public void init(GLAutoDrawable glAutoDrawable) {
@@ -87,8 +84,6 @@ public class Main {
             gl.glMatrixMode(GL2.GL_MODELVIEW);
             gl.glViewport(0, 0, WIDTH, HEIGHT);
             gl.glLoadIdentity();
-
-            gl.glPolygonMode(GL2.GL_FRONT_AND_BACK, GL2.GL_LINES);
         }
 
         @Override
@@ -100,22 +95,14 @@ public class Main {
         public void display(GLAutoDrawable glAutoDrawable) {
             final GL2 gl = glAutoDrawable.getGL().getGL2();
 
-            drawColon(gl, 80, 20);
-            drawDigit(2, gl, 20, 20);
+            gl.glClear (GL2.GL_COLOR_BUFFER_BIT |  GL2.GL_DEPTH_BUFFER_BIT );
+            drawTime(gl, 20, 20);
 
             gl.glFlush();
         }
 
         @Override
         public void reshape(GLAutoDrawable glAutoDrawable, int i, int i1, int i2, int i3) {
-
-        }
-
-        public void update(){
-
-        }
-
-        public void render(GL2 gl){
 
         }
 
@@ -202,7 +189,7 @@ public class Main {
         -----------------------------------------------------------------------
          */
 
-        public void drawNumber(int num, final GL2 gl, int xOff, int yOff){
+        public void drawNumber(int num, final GL2 gl, double xOff, double yOff){
             drawDigit(num/10, gl, xOff, yOff);
             drawDigit(num%10, gl, xOff+(NUM_WIDTH + NUM_KERNING), yOff);
         }
@@ -255,6 +242,15 @@ public class Main {
             gl.glVertex2d(xOff, yOff+NUM_HEIGHT-colonOffset);
 
             gl.glEnd();
+        }
+
+        public void drawTime(final GL2 gl, double xOff, double yOff){
+            ZonedDateTime time = ZonedDateTime.now();
+            drawNumber(time.getHour(), gl, xOff, yOff);
+            drawColon(gl, xOff+NUM_WIDTH*2+NUM_KERNING+COLON_KERNING, yOff);
+            drawNumber(time.getMinute(), gl, xOff+NUM_WIDTH*2+NUM_KERNING+COLON_KERNING*2+COLON_WIDTH, yOff);
+            drawColon(gl, xOff+NUM_WIDTH*4+NUM_KERNING*2+COLON_KERNING*3+COLON_WIDTH, yOff);
+            drawNumber(time.getSecond(), gl, xOff+NUM_WIDTH*4+NUM_KERNING*2+COLON_KERNING*4+COLON_WIDTH*2, yOff);
         }
     }
 }
