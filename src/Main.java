@@ -29,18 +29,27 @@ public class Main {
     -----------------------------------------------------------------------
      */
 
+    //SCREEN
     public final static int     WIDTH = 480, HEIGHT = 300; // Width and height of screen
+
+    // NUMBERS
     public final static boolean CUT_CORNERS = true; // Whether to cut outside corners
     public final static boolean SHADOWS = true;
-    public final static double  THICKNESS = 10; // Thickness of lines
+    public final static double  THICKNESS = 8; // Thickness of lines
     public final static double  GAP = 1;
     public final static double  KERNING = 10; // Distance between numbers
     public final static double  NUM_WIDTH = 50, NUM_HEIGHT = 80;
+    public static final double CUT = (CUT_CORNERS)?THICKNESS/2.0:0;
 
+    // COLORS
     public final static float[] MAIN_COLOR_RGB = { 1.0f, 0, 0 };
     public final static float[] SHADOW_COLOR_RGB = { 0.2f, 0.2f, 0.2f };
 
-    public static final double CUT = (CUT_CORNERS)?THICKNESS/2.0:0;
+    // COLON
+    public final static double   COLON_WIDTH = 10;
+    public final static double   COLON_DOT_DISTANCE = 40;
+    public final static double   COLON_DOT_HEIGHT = 10;
+
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
@@ -91,7 +100,8 @@ public class Main {
             final GL2 gl = glAutoDrawable.getGL().getGL2();
             gl.glColor3f(1.0f, 0.0f, 0.0f);
 
-            drawNumber(12, gl, 20, 20);
+            drawColon(gl, 80, 20);
+            drawDigit(2, gl, 20, 20);
 
             gl.glFlush();
         }
@@ -218,6 +228,30 @@ public class Main {
                     case 6 -> drawBottomRight(gl, xOff, yOff);
                 }
             }
+        }
+
+        /*
+        -----------------------------------------------------------------------
+        Clock Rendering
+        -----------------------------------------------------------------------
+         */
+
+        public void drawColon(final GL2 gl, double xOff, double yOff){
+            double colonOffset = NUM_HEIGHT/2.0-COLON_DOT_DISTANCE/2.0-THICKNESS;
+
+            gl.glBegin(GL2.GL_QUADS);
+
+            gl.glVertex2d(xOff, yOff+colonOffset);
+            gl.glVertex2d(xOff+COLON_WIDTH, yOff+colonOffset);
+            gl.glVertex2d(xOff+COLON_WIDTH, yOff+colonOffset+ COLON_DOT_HEIGHT);
+            gl.glVertex2d(xOff, yOff+colonOffset+ COLON_DOT_HEIGHT);
+
+            gl.glVertex2d(xOff, yOff+NUM_HEIGHT-colonOffset- COLON_DOT_HEIGHT);
+            gl.glVertex2d(xOff+COLON_WIDTH, yOff+NUM_HEIGHT-colonOffset- COLON_DOT_HEIGHT);
+            gl.glVertex2d(xOff+COLON_WIDTH, yOff+NUM_HEIGHT-colonOffset);
+            gl.glVertex2d(xOff, yOff+NUM_HEIGHT-colonOffset);
+
+            gl.glEnd();
         }
     }
 }
