@@ -37,7 +37,7 @@ public class Main {
     public final static boolean SHADOWS = true;
     public final static double  THICKNESS = 8; // Thickness of lines
     public final static double  GAP = 1;
-    public final static double  KERNING = 10; // Distance between numbers
+    public final static double  NUM_KERNING = 10; // Distance between numbers
     public final static double  NUM_WIDTH = 50, NUM_HEIGHT = 80;
     public static final double CUT = (CUT_CORNERS)?THICKNESS/2.0:0;
 
@@ -49,7 +49,7 @@ public class Main {
     public final static double   COLON_WIDTH = 10;
     public final static double   COLON_DOT_DISTANCE = 20;
     public final static double   COLON_DOT_HEIGHT = 10;
-    public final static double   COLON_DISTANCE_FROM_NUMS = 10;
+    public final static double   COLON_KERNING = 10;
 
 
     public static void main(String[] args) {
@@ -204,7 +204,7 @@ public class Main {
 
         public void drawNumber(int num, final GL2 gl, int xOff, int yOff){
             drawDigit(num/10, gl, xOff, yOff);
-            drawDigit(num%10, gl, xOff+(NUM_WIDTH + KERNING), yOff);
+            drawDigit(num%10, gl, xOff+(NUM_WIDTH + NUM_KERNING), yOff);
         }
 
         public void drawDigit(int digit, final GL2 gl, double xOff, double yOff){
