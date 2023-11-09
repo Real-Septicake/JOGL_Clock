@@ -47,8 +47,9 @@ public class Main {
 
     // COLON
     public final static double   COLON_WIDTH = 10;
-    public final static double   COLON_DOT_DISTANCE = 40;
+    public final static double   COLON_DOT_DISTANCE = 20;
     public final static double   COLON_DOT_HEIGHT = 10;
+    public final static double   COLON_DISTANCE_FROM_NUMS = 10;
 
 
     public static void main(String[] args) {
@@ -98,7 +99,6 @@ public class Main {
         @Override
         public void display(GLAutoDrawable glAutoDrawable) {
             final GL2 gl = glAutoDrawable.getGL().getGL2();
-            gl.glColor3f(1.0f, 0.0f, 0.0f);
 
             drawColon(gl, 80, 20);
             drawDigit(2, gl, 20, 20);
@@ -124,6 +124,7 @@ public class Main {
         Segment Rendering
         -----------------------------------------------------------------------
          */
+
         private void drawTop(final GL2 gl, double xOff, double yOff){
             gl.glBegin(GL2.GL_QUADS);
 
@@ -238,6 +239,8 @@ public class Main {
 
         public void drawColon(final GL2 gl, double xOff, double yOff){
             double colonOffset = NUM_HEIGHT/2.0-COLON_DOT_DISTANCE/2.0-THICKNESS;
+
+            gl.glColor3f(MAIN_COLOR_RGB[0], MAIN_COLOR_RGB[1], MAIN_COLOR_RGB[2]);
 
             gl.glBegin(GL2.GL_QUADS);
 
