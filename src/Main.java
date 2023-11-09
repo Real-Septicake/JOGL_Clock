@@ -9,14 +9,18 @@ import com.jogamp.opengl.glu.GLU;
 
 
 public class Main {
-    public final static int    WIDTH = 480, HEIGHT = 300; // Width and height of screen
+    public final static int     WIDTH = 480, HEIGHT = 300; // Width and height of screen
     public final static boolean CUT_CORNERS = true; // Whether to cut outside corners
+    public final static boolean SHADOWS = true;
 
-    public final static double THICKNESS = 10; // Thickness of lines
-    public final static double GAP = 1;
-    public final static double SCALE = 1;
+    public final static double  THICKNESS = 10; // Thickness of lines
+    public final static double  GAP = 1;
+    public final static double  SCALE = 1;
 
-    public final static double NUM_WIDTH = 50, NUM_HEIGHT = 80;
+    public final static double  NUM_WIDTH = 50, NUM_HEIGHT = 80;
+
+    public final static float[] MAIN_COLOR_RGB = { 1.0f, 0, 0 };
+    public final static float[] SHADOW_COLOR_RGB = { 0.2f, 0.2f, 0.2f };
 
     public static final double CUT = (CUT_CORNERS)?THICKNESS/2.0:0;
 
@@ -165,6 +169,11 @@ public class Main {
             drawBottomLeft(gl, xOff, yOff);
             drawTopRight(gl, xOff, yOff);
             drawBottomRight(gl, xOff, yOff);
+
+            if(SHADOWS){
+                gl.glColor3f(SHADOW_COLOR_RGB[0], SHADOW_COLOR_RGB[1], SHADOW_COLOR_RGB[2]);
+                drawMiddle(gl, xOff, yOff);
+            }
         }
     }
 }
