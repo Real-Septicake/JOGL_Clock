@@ -19,6 +19,19 @@ public class Main {
 
     public final static double  NUM_WIDTH = 50, NUM_HEIGHT = 80;
 
+    public final static int[][] NUMS = { // { Top, Middle, Bottom, Top Left, Bottom Left, Top Right, Bottom Right }
+            {1, 0, 1, 1, 1, 1, 1},
+            {0, 0, 0, 0, 0, 1, 1},
+            {1, 1, 1, 0, 1, 1, 0},
+            {1, 1, 1, 0, 0, 1, 1},
+            {0, 1, 0, 1, 0, 1, 1},
+            {1, 1, 1, 1, 0, 0, 1},
+            {0, 1, 1, 1, 1, 0, 1},
+            {1, 0, 0, 0, 0, 1, 1},
+            {1, 1, 1, 1, 1, 1, 1},
+            {1, 1, 0, 1, 0, 1, 1},
+    };
+
     public final static float[] MAIN_COLOR_RGB = { 1.0f, 0, 0 };
     public final static float[] SHADOW_COLOR_RGB = { 0.2f, 0.2f, 0.2f };
 
@@ -73,7 +86,7 @@ public class Main {
             final GL2 gl = glAutoDrawable.getGL().getGL2();
             gl.glColor3f(1.0f, 0.0f, 0.0f);
 
-            drawZero(gl, 20, 20);
+            drawDigit(2, gl, 20, 20);
 
             gl.glFlush();
         }
@@ -91,6 +104,11 @@ public class Main {
 
         }
 
+        /*
+        -----------------------------------------------------------------------
+        Segment Rendering
+        -----------------------------------------------------------------------
+         */
         private void drawTop(final GL2 gl, int xOff, int yOff){
             gl.glBegin(GL2.GL_QUADS);
 
@@ -162,17 +180,32 @@ public class Main {
             gl.glEnd();
         }
 
-        public void drawZero(final GL2 gl, int xOff, int yOff){
-            drawTop(gl, xOff, yOff);
-            drawBottom(gl, xOff, yOff);
-            drawTopLeft(gl, xOff, yOff);
-            drawBottomLeft(gl, xOff, yOff);
-            drawTopRight(gl, xOff, yOff);
-            drawBottomRight(gl, xOff, yOff);
+        /*
+        -----------------------------------------------------------------------
+        Number Rendering
+        -----------------------------------------------------------------------
+         */
+        public void drawDigit(int digit, final GL2 gl, int xOff, int yOff){
+            int[] segs = NUMS[digit];
 
-            if(SHADOWS){
-                gl.glColor3f(SHADOW_COLOR_RGB[0], SHADOW_COLOR_RGB[1], SHADOW_COLOR_RGB[2]);
-                drawMiddle(gl, xOff, yOff);
+            for(int i = 0; i < segs.length; i++){
+                if(segs[i] == 1){
+                    gl.glColor3f(MAIN_COLOR_RGB[0], MAIN_COLOR_RGB[1], MAIN_COLOR_RGB[2]);
+                }else if(segs[i] == 0 && !SHADOWS){
+                    continue;
+                }else{
+                    gl.glColor3f(SHADOW_COLOR_RGB[0], SHADOW_COLOR_RGB[1], SHADOW_COLOR_RGB[2]);
+                }
+
+                switch (i){
+                    case 0 -> drawTop(gl, xOff, yOff);
+                    case 1 -> drawMiddle(gl, xOff, yOff);
+                    case 2 -> drawBottom(gl, xOff, yOff);
+                    case 3 -> drawTopLeft(gl, xOff, yOff);
+                    case 4 -> drawBottomLeft(gl, xOff, yOff);
+                    case 5 -> drawTopRight(gl, xOff, yOff);
+                    case 6 -> drawBottomRight(gl, xOff, yOff);
+                }
             }
         }
     }
