@@ -1,4 +1,7 @@
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.time.ZonedDateTime;
 
 import com.jogamp.opengl.*;
@@ -6,9 +9,46 @@ import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.util.FPSAnimator;
 
 import com.jogamp.opengl.glu.GLU;
+import com.jogamp.opengl.util.awt.TextRenderer;
 
 
 public class Main {
+
+    /*
+    -----------------------------------------------------------------------
+    Configs
+    -----------------------------------------------------------------------
+     */
+
+    //SCREEN
+    public final static int     WIDTH = 420, HEIGHT = 180; // Width and height of screen
+
+    // NUMBERS
+    public final static boolean CUT_CORNERS = true; // Whether to cut outside corners
+    public final static boolean SHADOWS = true;
+    public final static double  THICKNESS = 8; // Thickness of lines
+    public final static double  GAP = 1;
+    public final static double  NUM_KERNING = 5; // Distance between numbers
+    public final static double  NUM_WIDTH = 50, NUM_HEIGHT = 80;
+
+    // COLORS
+    public final static float[] MAIN_COLOR_RGB = { 1.0f, 0, 0 };
+    public final static float[] SHADOW_COLOR_RGB = { 0.2f, 0.2f, 0.2f };
+    public final static float[] SELECTION_COLOR_RGB = { 1.f, 1.f, 0 };
+
+    // COLON
+    public final static double   COLON_WIDTH = 10;
+    public final static double   COLON_DOT_DISTANCE = 20;
+    public final static double   COLON_DOT_HEIGHT = 10;
+    public final static double   COLON_KERNING = 10;
+
+    // SELECTION
+    public final static String[] SELECTIONS = {
+            "Timer",
+            "Stopwatch",
+    };
+
+
     public final static int[][] NUMS = { // { Top, Middle, Bottom, Top Left, Bottom Left, Top Right, Bottom Right }
             {1, 0, 1, 1, 1, 1, 1},
             {0, 0, 0, 0, 0, 1, 1},
@@ -22,33 +62,9 @@ public class Main {
             {1, 1, 0, 1, 0, 1, 1},
     };
 
-    /*
-    -----------------------------------------------------------------------
-    Configs
-    -----------------------------------------------------------------------
-     */
-
-    //SCREEN
-    public final static int     WIDTH = 480, HEIGHT = 300; // Width and height of screen
-
-    // NUMBERS
-    public final static boolean CUT_CORNERS = true; // Whether to cut outside corners
-    public final static boolean SHADOWS = true;
-    public final static double  THICKNESS = 8; // Thickness of lines
-    public final static double  GAP = 1;
-    public final static double  NUM_KERNING = 5; // Distance between numbers
-    public final static double  NUM_WIDTH = 50, NUM_HEIGHT = 80;
     public static final double CUT = (CUT_CORNERS)?THICKNESS/2.0:0;
 
-    // COLORS
-    public final static float[] MAIN_COLOR_RGB = { 1.0f, 0, 0 };
-    public final static float[] SHADOW_COLOR_RGB = { 0.2f, 0.2f, 0.2f };
-
-    // COLON
-    public final static double   COLON_WIDTH = 10;
-    public final static double   COLON_DOT_DISTANCE = 20;
-    public final static double   COLON_DOT_HEIGHT = 10;
-    public final static double   COLON_KERNING = 10;
+    public static int selected = 0;
 
 
     public static void main(String[] args) {
@@ -64,6 +80,10 @@ public class Main {
             Clock c = new Clock();
             canvas.addGLEventListener(c);
             canvas.setSize(WIDTH, HEIGHT);
+
+            Selection s = new Selection();
+            canvas.addGLEventListener(s);
+            frame.addKeyListener(s);
 
             frame.getContentPane().add(canvas);
             frame.setVisible(true);
@@ -233,7 +253,7 @@ public class Main {
 
             gl.glVertex2d(xOff, yOff+colonOffset);
             gl.glVertex2d(xOff+COLON_WIDTH, yOff+colonOffset);
-            gl.glVertex2d(xOff+COLON_WIDTH, yOff+colonOffset+ COLON_DOT_HEIGHT);
+            gl.glVertex2d(xOff+COLON_WIDTH, yOff+colonOffset+COLON_DOT_HEIGHT);
             gl.glVertex2d(xOff, yOff+colonOffset+ COLON_DOT_HEIGHT);
 
             gl.glVertex2d(xOff, yOff+NUM_HEIGHT-colonOffset- COLON_DOT_HEIGHT);
@@ -252,5 +272,83 @@ public class Main {
             drawColon(gl, xOff+NUM_WIDTH*4+NUM_KERNING*2+COLON_KERNING*3+COLON_WIDTH, yOff);
             drawNumber(time.getSecond(), gl, xOff+NUM_WIDTH*4+NUM_KERNING*2+COLON_KERNING*4+COLON_WIDTH*2, yOff);
         }
+    }
+
+    private static class Selection implements KeyListener, GLEventListener {
+
+        @Override
+        public void keyTyped(KeyEvent e) {
+
+        }
+
+        @Override
+        public void keyPressed(KeyEvent e) {
+            switch(e.getKeyCode()) {
+                case KeyEvent.VK_D -> {
+                    selected++;
+                    if(selected > SELECTIONS.length-1) {
+                        selected = 0;
+                    }
+                }
+                case KeyEvent.VK_A -> {
+                    selected--;
+                    if(selected < 0) {
+                        selected = SELECTIONS.length-1;
+                    }
+                }
+            }
+        }
+
+        @Override
+        public void keyReleased(KeyEvent e) {
+
+        }
+
+        @Override
+        public void init(GLAutoDrawable glAutoDrawable) {
+            GL2 gl = glAutoDrawable.getGL().getGL2();
+            gl.glMatrixMode(GL2.GL_PROJECTION);
+            gl.glLoadIdentity();
+            GLU glu = new GLU();
+            glu.gluOrtho2D(0, WIDTH, HEIGHT, 0);
+            gl.glMatrixMode(GL2.GL_MODELVIEW);
+            gl.glViewport(0, 0, WIDTH, HEIGHT);
+            gl.glLoadIdentity();
+        }
+
+        @Override
+        public void dispose(GLAutoDrawable glAutoDrawable) {
+
+        }
+
+        @Override
+        public void display(GLAutoDrawable glAutoDrawable) {
+            TextRenderer renderer = new TextRenderer(new Font("Monospaced", Font.PLAIN, 20));
+            renderer.beginRendering(WIDTH, HEIGHT);
+            renderer.setSmoothing(true);
+
+            int offset = 0;
+
+            for(int i = 0; i < SELECTIONS.length; i++){
+                if (selected == i) {
+                    renderer.setColor(SELECTION_COLOR_RGB[0], SELECTION_COLOR_RGB[1], SELECTION_COLOR_RGB[2], 1);
+                } else {
+                    renderer.setColor(MAIN_COLOR_RGB[0], MAIN_COLOR_RGB[1], MAIN_COLOR_RGB[2], 1);
+                }
+
+                renderer.draw(SELECTIONS[i], offset + i*15, 5);
+                offset += (int) renderer.getBounds(SELECTIONS[i]).getWidth();
+            }
+
+
+            renderer.endRendering();
+        }
+
+        @Override
+        public void reshape(GLAutoDrawable glAutoDrawable, int i, int i1, int i2, int i3) {
+
+        }
+
+
     }
 }
