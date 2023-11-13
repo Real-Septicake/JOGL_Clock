@@ -1,6 +1,4 @@
 import javax.swing.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.time.ZonedDateTime;
 
 import com.jogamp.opengl.*;
@@ -61,13 +59,7 @@ public class Main {
 
 
     public static void main(String[] args) {
-        if(args.length == 0 || args[0].equals("-c")){
-            new Clock().run();
-        }else if(args[0].equals("-t")){
-            new Timer().run();
-        }else{
-            throw new IllegalArgumentException(args[0] + " is not a valid argument");
-        }
+        new Clock().run();
     }
 
     private static void drawTop(final GL2 gl, double xOff, double yOff){
@@ -266,173 +258,6 @@ public class Main {
                 final FPSAnimator anim = new FPSAnimator(canvas, 20, true);
                 anim.start();
             });
-        }
-    }
-
-    private static class Timer implements GLEventListener, KeyListener, Runnable {
-        private static boolean running = false;
-        private static int hours = 0, minutes = 0, seconds = 0;
-        private static long duration = 0;
-        private static long start = 0;
-        private static int selected = 2;
-
-        @Override
-        public void init(GLAutoDrawable glAutoDrawable) {
-            Main.init(glAutoDrawable);
-        }
-
-        @Override
-        public void dispose(GLAutoDrawable glAutoDrawable) {
-
-        }
-
-        @Override
-        public void display(GLAutoDrawable glAutoDrawable) {
-            GL2 gl = glAutoDrawable.getGL().getGL2();
-
-            gl.glClear (GL2.GL_COLOR_BUFFER_BIT |  GL2.GL_DEPTH_BUFFER_BIT );
-
-            if(!running){
-                setColorSelect(0, gl, 20, 20);
-                drawNumber(hours, gl, 20, 20);
-            }
-        }
-
-        @Override
-        public void reshape(GLAutoDrawable glAutoDrawable, int i, int i1, int i2, int i3) {
-
-        }
-
-        @Override
-        public void keyTyped(KeyEvent e) {
-
-        }
-
-        @Override
-        public void keyPressed(KeyEvent e) {
-            if(!running){
-                switch(e.getKeyCode()){
-                    case KeyEvent.VK_D -> {
-                        selected++;
-                        if(selected > 2){
-                            selected = 0;
-                        }
-                    }
-                    case KeyEvent.VK_A -> {
-                        selected--;
-                        if(selected < 0){
-                            selected = 2;
-                        }
-                    }
-                    case KeyEvent.VK_W -> {
-                        switch(selected){
-                            case 0 -> incHour();
-                            case 1 -> incMinute();
-                            case 2 -> incSecond();
-                        }
-                    }
-                    case KeyEvent.VK_S -> {
-                        switch(selected){
-                            case 0 -> decHour();
-                            case 1 -> decMinute();
-                            case 2 -> decSecond();
-                        }
-                    }
-                    case KeyEvent.VK_ENTER -> {
-                        running = true;
-                        duration = ((long) hours *1000*60*60) + ((long) minutes  *1000*60) + ((long) seconds *1000);
-                        start = System.currentTimeMillis();
-                    }
-                }
-            }
-        }
-
-        @Override
-        public void keyReleased(KeyEvent e) {
-
-        }
-
-        @Override
-        public void run() {
-            SwingUtilities.invokeLater(() -> {
-                JFrame frame = new JFrame("Timer Test");
-                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                frame.setSize(WIDTH, HEIGHT);
-
-                GLProfile profile = GLProfile.get(GLProfile.GL2);
-                GLCapabilities capabilities = new GLCapabilities(profile);
-
-                final GLCanvas canvas = new GLCanvas(capabilities);
-                Timer t = new Timer();
-                canvas.addGLEventListener(t);
-                canvas.setSize(WIDTH, HEIGHT);
-
-                frame.addKeyListener(t);
-                frame.getContentPane().add(canvas);
-                frame.setVisible(true);
-
-                final FPSAnimator anim = new FPSAnimator(canvas, 20, true);
-                anim.start();
-            });
-        }
-
-        private void setColorSelect(int select, GL2 gl, double xOff, double yOff){
-            if(selected == select){
-                gl.glColor3f(MAIN_COLOR_RGB[0], MAIN_COLOR_RGB[1], MAIN_COLOR_RGB[2]);
-
-                gl.glBegin(GL2.GL_LINES);
-
-                gl.glVertex2d(xOff+NUM_WIDTH*2+NUM_KERNING+5, yOff+NUM_HEIGHT+5);
-                gl.glVertex2d(xOff-5, yOff+NUM_HEIGHT+5);
-
-                gl.glEnd();
-            }
-        }
-
-        public void incSecond(){
-            seconds++;
-            if (seconds > 59){
-                seconds -= 60;
-                incMinute();
-            }
-        }
-        public void incMinute(){
-            minutes++;
-            if (minutes > 59){
-                minutes -= 60;
-                incHour();
-            }
-        }
-        public void incHour(){
-            hours++;
-            if (hours > 99){
-                hours = 0;
-                minutes = 0;
-                seconds = 0;
-            }
-        }
-
-        public void decSecond(){
-            seconds--;
-            if (seconds < 0){
-                seconds += 60;
-                decMinute();
-            }
-        }
-        public void decMinute(){
-            minutes--;
-            if (minutes < 0){
-                minutes += 60;
-                decHour();
-            }
-        }
-        public void decHour(){
-            hours--;
-            if (hours < 0){
-                hours = 99;
-                minutes = 59;
-                seconds = 59;
-            }
         }
     }
 }
