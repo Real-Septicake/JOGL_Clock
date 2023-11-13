@@ -16,28 +16,30 @@ public class Main {
     -----------------------------------------------------------------------
      */
 
+    public final static double  SCALE = 2;
+
     //SCREEN
-    public final static int     WIDTH = 415, HEIGHT = 120; // Width and height of screen
+    public final static double  WIDTH = 415*SCALE, HEIGHT = 120*SCALE; // Width and height of screen
 
     // NUMBERS
     public final static boolean CUT_CORNERS = true; // Whether to cut outside corners
     public final static boolean SHADOWS = true;
-    public final static double  THICKNESS = 8; // Thickness of lines
-    public final static double  GAP = 1;
-    public final static double  NUM_KERNING = 5; // Distance between numbers
-    public final static double  NUM_WIDTH = 50, NUM_HEIGHT = 80;
+    public final static double  THICKNESS = 8*SCALE; // Thickness of lines
+    public final static double  GAP = 1*SCALE;
+    public final static double  NUM_KERNING = 5*SCALE; // Distance between numbers
+    public final static double  NUM_WIDTH = 50*SCALE, NUM_HEIGHT = 80*SCALE;
 
     // COLORS
     public final static float[] MAIN_COLOR_RGB = { 1.0f, 0.f, 0.32f };
     public final static float[] BACKGROUND_COLOR_RGB = { 0.15f, 0.1f, 0.1f };
-    public final static float[] SHADOW_COLOR_RGB = { 0.25f, 0.2f, 0.2f };
+    public final static float[] SHADOW_COLOR_RGB = { 0.27f, 0.2f, 0.2f };
     public final static float[] SELECTION_COLOR_RGB = { 1.f, 1.f, 0 };
 
     // COLON
-    public final static double   COLON_WIDTH = 10;
-    public final static double   COLON_DOT_DISTANCE = 20;
-    public final static double   COLON_DOT_HEIGHT = 10;
-    public final static double   COLON_KERNING = 10;
+    public final static double   COLON_WIDTH = 10*SCALE;
+    public final static double   COLON_DOT_DISTANCE = 20*SCALE;
+    public final static double   COLON_DOT_HEIGHT = 10*SCALE;
+    public final static double   COLON_KERNING = 10*SCALE;
 
 
     /*
@@ -191,7 +193,7 @@ public class Main {
         GLU glu = new GLU();
         glu.gluOrtho2D(0, WIDTH, HEIGHT, 0);
         gl.glMatrixMode(GL2.GL_MODELVIEW);
-        gl.glViewport(0, 0, WIDTH, HEIGHT);
+        gl.glViewport(0, 0, (int)WIDTH, (int)HEIGHT);
         gl.glLoadIdentity();
     }
 
@@ -214,7 +216,7 @@ public class Main {
 
             gl.glClearColor(BACKGROUND_COLOR_RGB[0], BACKGROUND_COLOR_RGB[1], BACKGROUND_COLOR_RGB[2], 1.f);
             gl.glClear (GL2.GL_COLOR_BUFFER_BIT |  GL2.GL_DEPTH_BUFFER_BIT );
-            drawTime(gl, 20, 20);
+            drawTime(gl, 20*SCALE, 20*SCALE);
 
             gl.glFlush();
         }
@@ -244,7 +246,7 @@ public class Main {
             SwingUtilities.invokeLater(() -> {
                 JFrame frame = new JFrame("Clock Test");
                 frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                frame.setSize(WIDTH, HEIGHT);
+                frame.setSize((int)WIDTH, (int)HEIGHT);
 
                 GLProfile profile = GLProfile.get(GLProfile.GL2);
                 GLCapabilities capabilities = new GLCapabilities(profile);
@@ -252,7 +254,7 @@ public class Main {
                 final GLCanvas canvas = new GLCanvas(capabilities);
                 Clock c = new Clock();
                 canvas.addGLEventListener(c);
-                canvas.setSize(WIDTH, HEIGHT);
+                canvas.setSize((int)WIDTH, (int)HEIGHT);
 
                 frame.getContentPane().add(canvas);
                 frame.setVisible(true);
