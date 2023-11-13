@@ -71,29 +71,7 @@ public class Main {
 
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            JFrame frame = new JFrame("Clock Test");
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.setSize(WIDTH, HEIGHT);
-
-            GLProfile profile = GLProfile.get(GLProfile.GL2);
-            GLCapabilities capabilities = new GLCapabilities(profile);
-
-            final GLCanvas canvas = new GLCanvas(capabilities);
-            Clock c = new Clock();
-            canvas.addGLEventListener(c);
-            canvas.setSize(WIDTH, HEIGHT);
-
-            Selection s = new Selection();
-            canvas.addGLEventListener(s);
-            frame.addKeyListener(s);
-
-            frame.getContentPane().add(canvas);
-            frame.setVisible(true);
-
-            final FPSAnimator anim = new FPSAnimator(canvas, 20, true);
-            anim.start();
-        });
+        new Clock().run();
     }
 
     private static void drawTop(final GL2 gl, double xOff, double yOff){
@@ -168,7 +146,7 @@ public class Main {
     }
 
 
-    private static class Clock implements GLEventListener {
+    private static class Clock implements GLEventListener, Runnable {
 
         @Override
         public void init(GLAutoDrawable glAutoDrawable) {
@@ -270,6 +248,33 @@ public class Main {
             drawNumber(time.getMinute(), gl, xOff+NUM_WIDTH*2+NUM_KERNING+COLON_KERNING*2+COLON_WIDTH, yOff);
             drawColon(gl, xOff+NUM_WIDTH*4+NUM_KERNING*2+COLON_KERNING*3+COLON_WIDTH, yOff);
             drawNumber(time.getSecond(), gl, xOff+NUM_WIDTH*4+NUM_KERNING*2+COLON_KERNING*4+COLON_WIDTH*2, yOff);
+        }
+
+        @Override
+        public void run() {
+            SwingUtilities.invokeLater(() -> {
+                JFrame frame = new JFrame("Clock Test");
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                frame.setSize(WIDTH, HEIGHT);
+
+                GLProfile profile = GLProfile.get(GLProfile.GL2);
+                GLCapabilities capabilities = new GLCapabilities(profile);
+
+                final GLCanvas canvas = new GLCanvas(capabilities);
+                Clock c = new Clock();
+                canvas.addGLEventListener(c);
+                canvas.setSize(WIDTH, HEIGHT);
+
+                Selection s = new Selection();
+                canvas.addGLEventListener(s);
+                frame.addKeyListener(s);
+
+                frame.getContentPane().add(canvas);
+                frame.setVisible(true);
+
+                final FPSAnimator anim = new FPSAnimator(canvas, 20, true);
+                anim.start();
+            });
         }
     }
 
