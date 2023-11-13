@@ -49,6 +49,9 @@ public class Main {
     };
 
 
+    /*
+    No Touching
+     */
     public final static int[][] NUMS = { // { Top, Middle, Bottom, Top Left, Bottom Left, Top Right, Bottom Right }
             {1, 0, 1, 1, 1, 1, 1},
             {0, 0, 0, 0, 0, 1, 1},
@@ -92,6 +95,79 @@ public class Main {
             anim.start();
         });
     }
+
+    private static void drawTop(final GL2 gl, double xOff, double yOff){
+        gl.glBegin(GL2.GL_QUADS);
+
+        gl.glVertex2d(xOff+THICKNESS+GAP, yOff+GAP);
+        gl.glVertex2d(xOff+NUM_WIDTH-THICKNESS-GAP, yOff+GAP);
+        gl.glVertex2d(xOff+NUM_WIDTH-THICKNESS-GAP, yOff+THICKNESS-GAP);
+        gl.glVertex2d(xOff+THICKNESS+GAP, yOff+THICKNESS-GAP);
+
+        gl.glEnd();
+    }
+    private static void drawMiddle(final GL2 gl, double xOff, double yOff){
+        gl.glBegin(GL2.GL_QUADS);
+
+        gl.glVertex2d(xOff+THICKNESS+GAP, yOff+NUM_HEIGHT/2.0-THICKNESS/2.0+GAP);
+        gl.glVertex2d(xOff+NUM_WIDTH-THICKNESS-GAP, yOff+NUM_HEIGHT/2.0-THICKNESS/2.0+GAP);
+        gl.glVertex2d(xOff+NUM_WIDTH-THICKNESS-GAP, yOff+NUM_HEIGHT/2.0+THICKNESS/2.0-GAP);
+        gl.glVertex2d(xOff+THICKNESS+GAP, yOff+NUM_HEIGHT/2.0+THICKNESS/2.0-GAP);
+
+        gl.glEnd();
+    }
+    private static void drawBottom(final GL2 gl, double xOff, double yOff){
+        gl.glBegin(GL2.GL_QUADS);
+
+        gl.glVertex2d(xOff+THICKNESS+GAP, yOff+NUM_HEIGHT-THICKNESS+GAP);
+        gl.glVertex2d(xOff+NUM_WIDTH-THICKNESS-GAP, yOff+NUM_HEIGHT-THICKNESS+GAP);
+        gl.glVertex2d(xOff+NUM_WIDTH-THICKNESS-GAP, yOff+NUM_HEIGHT-GAP);
+        gl.glVertex2d(xOff+THICKNESS+GAP, yOff+NUM_HEIGHT-GAP);
+
+        gl.glEnd();
+    }
+    private static void drawTopLeft(final GL2 gl, double xOff, double yOff){
+        gl.glBegin(GL2.GL_QUADS);
+
+        gl.glVertex2d(xOff+GAP, yOff+GAP+CUT);
+        gl.glVertex2d(xOff+THICKNESS-GAP, yOff+GAP+CUT);
+        gl.glVertex2d(xOff+THICKNESS-GAP, yOff+NUM_HEIGHT/2.0-GAP);
+        gl.glVertex2d(xOff+GAP, yOff+NUM_HEIGHT/2.0-GAP);
+
+        gl.glEnd();
+    }
+    private static void drawBottomLeft(final GL2 gl, double xOff, double yOff){
+        gl.glBegin(GL2.GL_QUADS);
+
+        gl.glVertex2d(xOff+GAP, yOff+NUM_HEIGHT/2.0+GAP);
+        gl.glVertex2d(xOff+THICKNESS-GAP, yOff+NUM_HEIGHT/2.0+GAP);
+        gl.glVertex2d(xOff+THICKNESS-GAP, yOff+NUM_HEIGHT-GAP-CUT);
+        gl.glVertex2d(xOff+GAP, yOff+NUM_HEIGHT-GAP-CUT);
+
+        gl.glEnd();
+    }
+    private static void drawTopRight(final GL2 gl, double xOff, double yOff){
+        gl.glBegin(GL2.GL_QUADS);
+
+        gl.glVertex2d(xOff+NUM_WIDTH-THICKNESS+GAP, yOff+GAP+CUT);
+        gl.glVertex2d(xOff+NUM_WIDTH-GAP, yOff+GAP+CUT);
+        gl.glVertex2d(xOff+NUM_WIDTH-GAP, yOff+NUM_HEIGHT/2.0-GAP);
+        gl.glVertex2d(xOff+NUM_WIDTH-THICKNESS+GAP, yOff+NUM_HEIGHT/2.0-GAP);
+
+        gl.glEnd();
+    }
+    private static void drawBottomRight(final GL2 gl, double xOff, double yOff){
+        gl.glBegin(GL2.GL_QUADS);
+
+        gl.glVertex2d(xOff+NUM_WIDTH-THICKNESS+GAP, yOff+NUM_HEIGHT/2.0+GAP);
+        gl.glVertex2d(xOff+NUM_WIDTH-GAP, yOff+NUM_HEIGHT/2.0+GAP);
+        gl.glVertex2d(xOff+NUM_WIDTH-GAP, yOff+NUM_HEIGHT-GAP-CUT);
+        gl.glVertex2d(xOff+NUM_WIDTH-THICKNESS+GAP, yOff+NUM_HEIGHT-GAP-CUT);
+
+        gl.glEnd();
+    }
+
+
     private static class Clock implements GLEventListener {
 
         @Override
@@ -124,83 +200,6 @@ public class Main {
         @Override
         public void reshape(GLAutoDrawable glAutoDrawable, int i, int i1, int i2, int i3) {
 
-        }
-
-        /*
-        -----------------------------------------------------------------------
-        Segment Rendering
-        -----------------------------------------------------------------------
-         */
-
-        private void drawTop(final GL2 gl, double xOff, double yOff){
-            gl.glBegin(GL2.GL_QUADS);
-
-            gl.glVertex2d(xOff+THICKNESS+GAP, yOff+GAP);
-            gl.glVertex2d(xOff+NUM_WIDTH-THICKNESS-GAP, yOff+GAP);
-            gl.glVertex2d(xOff+NUM_WIDTH-THICKNESS-GAP, yOff+THICKNESS-GAP);
-            gl.glVertex2d(xOff+THICKNESS+GAP, yOff+THICKNESS-GAP);
-
-            gl.glEnd();
-        }
-        private void drawMiddle(final GL2 gl, double xOff, double yOff){
-            gl.glBegin(GL2.GL_QUADS);
-
-            gl.glVertex2d(xOff+THICKNESS+GAP, yOff+NUM_HEIGHT/2.0-THICKNESS/2.0+GAP);
-            gl.glVertex2d(xOff+NUM_WIDTH-THICKNESS-GAP, yOff+NUM_HEIGHT/2.0-THICKNESS/2.0+GAP);
-            gl.glVertex2d(xOff+NUM_WIDTH-THICKNESS-GAP, yOff+NUM_HEIGHT/2.0+THICKNESS/2.0-GAP);
-            gl.glVertex2d(xOff+THICKNESS+GAP, yOff+NUM_HEIGHT/2.0+THICKNESS/2.0-GAP);
-
-            gl.glEnd();
-        }
-        private void drawBottom(final GL2 gl, double xOff, double yOff){
-            gl.glBegin(GL2.GL_QUADS);
-
-            gl.glVertex2d(xOff+THICKNESS+GAP, yOff+NUM_HEIGHT-THICKNESS+GAP);
-            gl.glVertex2d(xOff+NUM_WIDTH-THICKNESS-GAP, yOff+NUM_HEIGHT-THICKNESS+GAP);
-            gl.glVertex2d(xOff+NUM_WIDTH-THICKNESS-GAP, yOff+NUM_HEIGHT-GAP);
-            gl.glVertex2d(xOff+THICKNESS+GAP, yOff+NUM_HEIGHT-GAP);
-
-            gl.glEnd();
-        }
-        private void drawTopLeft(final GL2 gl, double xOff, double yOff){
-            gl.glBegin(GL2.GL_QUADS);
-
-            gl.glVertex2d(xOff+GAP, yOff+GAP+CUT);
-            gl.glVertex2d(xOff+THICKNESS-GAP, yOff+GAP+CUT);
-            gl.glVertex2d(xOff+THICKNESS-GAP, yOff+NUM_HEIGHT/2.0-GAP);
-            gl.glVertex2d(xOff+GAP, yOff+NUM_HEIGHT/2.0-GAP);
-
-            gl.glEnd();
-        }
-        private void drawBottomLeft(final GL2 gl, double xOff, double yOff){
-            gl.glBegin(GL2.GL_QUADS);
-
-            gl.glVertex2d(xOff+GAP, yOff+NUM_HEIGHT/2.0+GAP);
-            gl.glVertex2d(xOff+THICKNESS-GAP, yOff+NUM_HEIGHT/2.0+GAP);
-            gl.glVertex2d(xOff+THICKNESS-GAP, yOff+NUM_HEIGHT-GAP-CUT);
-            gl.glVertex2d(xOff+GAP, yOff+NUM_HEIGHT-GAP-CUT);
-
-            gl.glEnd();
-        }
-        private void drawTopRight(final GL2 gl, double xOff, double yOff){
-            gl.glBegin(GL2.GL_QUADS);
-
-            gl.glVertex2d(xOff+NUM_WIDTH-THICKNESS+GAP, yOff+GAP+CUT);
-            gl.glVertex2d(xOff+NUM_WIDTH-GAP, yOff+GAP+CUT);
-            gl.glVertex2d(xOff+NUM_WIDTH-GAP, yOff+NUM_HEIGHT/2.0-GAP);
-            gl.glVertex2d(xOff+NUM_WIDTH-THICKNESS+GAP, yOff+NUM_HEIGHT/2.0-GAP);
-
-            gl.glEnd();
-        }
-        private void drawBottomRight(final GL2 gl, double xOff, double yOff){
-            gl.glBegin(GL2.GL_QUADS);
-
-            gl.glVertex2d(xOff+NUM_WIDTH-THICKNESS+GAP, yOff+NUM_HEIGHT/2.0+GAP);
-            gl.glVertex2d(xOff+NUM_WIDTH-GAP, yOff+NUM_HEIGHT/2.0+GAP);
-            gl.glVertex2d(xOff+NUM_WIDTH-GAP, yOff+NUM_HEIGHT-GAP-CUT);
-            gl.glVertex2d(xOff+NUM_WIDTH-THICKNESS+GAP, yOff+NUM_HEIGHT-GAP-CUT);
-
-            gl.glEnd();
         }
 
         /*
@@ -348,7 +347,5 @@ public class Main {
         public void reshape(GLAutoDrawable glAutoDrawable, int i, int i1, int i2, int i3) {
 
         }
-
-
     }
 }
