@@ -28,8 +28,9 @@ public class Main {
     public final static double  NUM_WIDTH = 50, NUM_HEIGHT = 80;
 
     // COLORS
-    public final static float[] MAIN_COLOR_RGB = { 1.0f, 0, 0 };
-    public final static float[] SHADOW_COLOR_RGB = { 0.2f, 0.2f, 0.2f };
+    public final static float[] MAIN_COLOR_RGB = { 1.0f, 0.f, 0.32f };
+    public final static float[] BACKGROUND_COLOR_RGB = { 0.15f, 0.1f, 0.1f };
+    public final static float[] SHADOW_COLOR_RGB = { 0.25f, 0.2f, 0.2f };
     public final static float[] SELECTION_COLOR_RGB = { 1.f, 1.f, 0 };
 
     // COLON
@@ -211,6 +212,7 @@ public class Main {
         public void display(GLAutoDrawable glAutoDrawable) {
             final GL2 gl = glAutoDrawable.getGL().getGL2();
 
+            gl.glClearColor(BACKGROUND_COLOR_RGB[0], BACKGROUND_COLOR_RGB[1], BACKGROUND_COLOR_RGB[2], 1.f);
             gl.glClear (GL2.GL_COLOR_BUFFER_BIT |  GL2.GL_DEPTH_BUFFER_BIT );
             drawTime(gl, 20, 20);
 
