@@ -37,13 +37,13 @@ public class Main {
     private final static Palette TECH_DARK_BLUE = Palette.ofFloat(new float[]{ 3f, 31f, 38f }, new float[]{ 5f, 46f, 57f }, new float[]{ 64f, 206f, 242f });
     private final static Palette SEABREEZE = Palette.ofFloat(new float[]{ 194f, 195f, 199f }, new float[]{ 131f, 118f, 156f }, new float[]{ 28f, 43f, 83f });
     private final static Palette LIGHT_FOREST = Palette.ofFloat(new float[]{ 235f, 239f, 231f }, new float[]{ 224f, 231f, 218f }, new float[]{ 128f, 159f, 105f });
-    private final static Palette WATERMELON = Palette.ofFloat(new float[]{ 3f, 29f, 9f }, new float[]{ 3f, 38f, 11f }, new float[]{ 228f, 75f, 113f});
+    private final static Palette WATERMELON = Palette.ofFloat(new float[]{ 3f, 29f, 9f }, new float[]{ 8f, 49f, 19f }, new float[]{ 228f, 75f, 113f});
     private final static Palette BUBBLEGUM = Palette.ofFloat(new float[]{ 255f, 235f, 251f }, new float[]{ 255, 214f, 247f }, new float[]{ 255, 115f, 227f });
     private final static Palette BLACK_AND_WHITE = Palette.ofFloat(new float[]{ 20f, 20f, 20f }, new float[]{ 31f, 31f, 31f }, new float[]{ 245f, 245f, 245f });
     private final static Palette TEAL_AND_PINK = Palette.ofFloat(new float[]{ 30f, 65f, 65f }, new float[]{ 17f, 85f, 85f }, new float[]{ 255f, 90f, 239f });
     private final static Palette PURPLE_AND_BLUE = Palette.ofFloat(new float[]{ 39f, 5f, 36f }, new float[]{ 59f, 2f, 55f }, new float[]{ 80f, 254f, 254f });
 
-    private final static Palette CURRENT_PALETTE = RED;
+    private final static Palette CURRENT_PALETTE = WATERMELON;
 
     // COLON
     private final static double   COLON_WIDTH = 10*SCALE;
