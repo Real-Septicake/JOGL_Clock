@@ -1,4 +1,5 @@
 import javax.swing.*;
+import java.awt.*;
 import java.time.ZonedDateTime;
 
 import com.jogamp.opengl.*;
@@ -7,7 +8,7 @@ import com.jogamp.opengl.util.FPSAnimator;
 
 import com.jogamp.opengl.glu.GLU;
 
-
+@SuppressWarnings("unused")
 public class Main {
 
     /*
@@ -16,36 +17,45 @@ public class Main {
     -----------------------------------------------------------------------
      */
 
-    public final static double  SCALE = 2;
+    private final static double  SCALE = 2;
 
     //SCREEN
-    public final static double  WIDTH = 415*SCALE, HEIGHT = 120*SCALE; // Width and height of screen
+    private final static double  WIDTH = 415*SCALE, HEIGHT = 120*SCALE; // Width and height of screen
 
     // NUMBERS
-    public final static boolean CUT_CORNERS = true; // Whether to cut outside corners
-    public final static boolean SHADOWS = true;
-    public final static double  THICKNESS = 8*SCALE; // Thickness of lines
-    public final static double  GAP = 1*SCALE;
-    public final static double  NUM_KERNING = 5*SCALE; // Distance between numbers
-    public final static double  NUM_WIDTH = 50*SCALE, NUM_HEIGHT = 80*SCALE;
+    private final static boolean CUT_CORNERS = true; // Whether to cut outside corners
+    private final static boolean SHADOWS = true;
+    private final static double  THICKNESS = 8*SCALE; // Thickness of lines
+    private final static double  GAP = 1*SCALE;
+    private final static double  NUM_KERNING = 5*SCALE; // Distance between numbers
+    private final static double  NUM_WIDTH = 50*SCALE, NUM_HEIGHT = 80*SCALE;
 
     // COLORS
-    public final static float[] MAIN_COLOR_RGB = { 1.0f, 0.f, 0.32f };
-    public final static float[] BACKGROUND_COLOR_RGB = { 0.15f, 0.1f, 0.1f };
-    public final static float[] SHADOW_COLOR_RGB = { 0.27f, 0.2f, 0.2f };
-    public final static float[] SELECTION_COLOR_RGB = { 1.f, 1.f, 0 };
+    private final static Palette RED = Palette.ofNormalFloat(new float[]{ 0.15f, 0.1f, 0.1f }, new float[]{ 0.27f, 0.2f, 0.2f }, new float[]{ 1.f, 0.f, 0.32f });
+    private final static Palette GREEN = Palette.ofFloat(new float[]{ 24f, 37f, 24f }, new float[]{ 36f, 49f, 33f }, new float[]{ 173f, 225f, 163f });
+    private final static Palette TECH_LIGHT_BLUE = Palette.ofFloat(new float[]{ 27f, 196f, 238f }, new float[]{ 62f, 205f, 240f }, new float[]{ 198f, 240f, 251f });
+    private final static Palette TECH_DARK_BLUE = Palette.ofFloat(new float[]{ 3f, 31f, 38f }, new float[]{ 5f, 46f, 57f }, new float[]{ 64f, 206f, 242f });
+    private final static Palette SEABREEZE = Palette.ofFloat(new float[]{ 194f, 195f, 199f }, new float[]{ 131f, 118f, 156f }, new float[]{ 28f, 43f, 83f });
+    private final static Palette LIGHT_FOREST = Palette.ofFloat(new float[]{ 235f, 239f, 231f }, new float[]{ 224f, 231f, 218f }, new float[]{ 128f, 159f, 105f });
+    private final static Palette WATERMELON = Palette.ofFloat(new float[]{ 3f, 29f, 9f }, new float[]{ 3f, 38f, 11f }, new float[]{ 228f, 75f, 113f});
+    private final static Palette BUBBLEGUM = Palette.ofFloat(new float[]{ 255f, 235f, 251f }, new float[]{ 255, 214f, 247f }, new float[]{ 255, 115f, 227f });
+    private final static Palette BLACK_AND_WHITE = Palette.ofFloat(new float[]{ 20f, 20f, 20f }, new float[]{ 31f, 31f, 31f }, new float[]{ 245f, 245f, 245f });
+    private final static Palette TEAL_AND_PINK = Palette.ofFloat(new float[]{ 30f, 65f, 65f }, new float[]{ 17f, 85f, 85f }, new float[]{ 255f, 90f, 239f });
+    private final static Palette PURPLE_AND_BLUE = Palette.ofFloat(new float[]{ 39f, 5f, 36f }, new float[]{ 59f, 2f, 55f }, new float[]{ 80f, 254f, 254f });
+
+    private final static Palette CURRENT_PALETTE = PURPLE_AND_BLUE;
 
     // COLON
-    public final static double   COLON_WIDTH = 10*SCALE;
-    public final static double   COLON_DOT_DISTANCE = 20*SCALE;
-    public final static double   COLON_DOT_HEIGHT = 10*SCALE;
-    public final static double   COLON_KERNING = 10*SCALE;
+    private final static double   COLON_WIDTH = 10*SCALE;
+    private final static double   COLON_DOT_DISTANCE = 20*SCALE;
+    private final static double   COLON_DOT_HEIGHT = 10*SCALE;
+    private final static double   COLON_KERNING = 10*SCALE;
 
 
     /*
     No Touching
      */
-    public final static int[][] NUMS = { // { Top, Middle, Bottom, Top Left, Bottom Left, Top Right, Bottom Right }
+    private final static int[][] NUMS = { // { Top, Middle, Bottom, Top Left, Bottom Left, Top Right, Bottom Right }
             {1, 0, 1, 1, 1, 1, 1},
             {0, 0, 0, 0, 0, 1, 1},
             {1, 1, 1, 0, 1, 1, 0},
@@ -58,13 +68,18 @@ public class Main {
             {1, 1, 0, 1, 0, 1, 1},
     };
 
-    public static final double CUT = (CUT_CORNERS)?THICKNESS/2.0:0;
+    private static final double CUT = (CUT_CORNERS)?THICKNESS/2.0:0;
 
 
     public static void main(String[] args) {
         new Clock().run();
     }
 
+    /*
+    -----------------------------------------------------------------------
+    Segment Rendering
+    -----------------------------------------------------------------------
+     */
     private static void drawTop(final GL2 gl, double xOff, double yOff){
         gl.glBegin(GL2.GL_QUADS);
 
@@ -136,21 +151,25 @@ public class Main {
         gl.glEnd();
     }
 
+    /*
+    -----------------------------------------------------------------------
+    Number Rendering
+    -----------------------------------------------------------------------
+     */
     public static void drawNumber(int num, final GL2 gl, double xOff, double yOff){
         drawDigit(num/10, gl, xOff, yOff);
         drawDigit(num%10, gl, xOff+(NUM_WIDTH + NUM_KERNING), yOff);
     }
-
     public static void drawDigit(int digit, final GL2 gl, double xOff, double yOff){
         int[] segs = NUMS[digit];
 
         for(int i = 0; i < segs.length; i++){
             if(segs[i] == 1){
-                gl.glColor3f(MAIN_COLOR_RGB[0], MAIN_COLOR_RGB[1], MAIN_COLOR_RGB[2]);
+                gl.glColor3f(CURRENT_PALETTE.highlight[0], CURRENT_PALETTE.highlight[1], CURRENT_PALETTE.highlight[2]);
             }else if(segs[i] == 0 && !SHADOWS){
                 continue;
             }else{
-                gl.glColor3f(SHADOW_COLOR_RGB[0], SHADOW_COLOR_RGB[1], SHADOW_COLOR_RGB[2]);
+                gl.glColor3f(CURRENT_PALETTE.shadow[0], CURRENT_PALETTE.shadow[1], CURRENT_PALETTE.shadow[2]);
             }
 
             switch (i){
@@ -164,11 +183,10 @@ public class Main {
             }
         }
     }
-
     public static void drawColon(final GL2 gl, double xOff, double yOff){
         double colonOffset = NUM_HEIGHT/2.0-COLON_DOT_DISTANCE/2.0-THICKNESS;
 
-        gl.glColor3f(MAIN_COLOR_RGB[0], MAIN_COLOR_RGB[1], MAIN_COLOR_RGB[2]);
+        gl.glColor3f(CURRENT_PALETTE.highlight[0], CURRENT_PALETTE.highlight[1], CURRENT_PALETTE.highlight[2]);
 
         gl.glBegin(GL2.GL_QUADS);
 
@@ -214,7 +232,7 @@ public class Main {
         public void display(GLAutoDrawable glAutoDrawable) {
             final GL2 gl = glAutoDrawable.getGL().getGL2();
 
-            gl.glClearColor(BACKGROUND_COLOR_RGB[0], BACKGROUND_COLOR_RGB[1], BACKGROUND_COLOR_RGB[2], 1.f);
+            gl.glClearColor(CURRENT_PALETTE.background[0], CURRENT_PALETTE.background[1], CURRENT_PALETTE.background[2], 1.f);
             gl.glClear (GL2.GL_COLOR_BUFFER_BIT |  GL2.GL_DEPTH_BUFFER_BIT );
             drawTime(gl, 20*SCALE, 20*SCALE);
 
@@ -262,6 +280,38 @@ public class Main {
                 final FPSAnimator anim = new FPSAnimator(canvas, 20, true);
                 anim.start();
             });
+        }
+    }
+
+    private static class Palette {
+        public float[] background;
+        public float[] shadow;
+        public float[] highlight;
+
+        private Palette(float[] b, float[] s, float[] h){
+            background = b;
+            shadow = s;
+            highlight = h;
+        }
+
+        public static Palette ofNormalFloat(float[] background, float[] shadow, float[] highlight){
+            return new Palette(background, shadow, highlight);
+        }
+
+        public static Palette ofFloat(float[] background, float[] shadow, float[] highlight){
+            return new Palette(
+                    new float[]{ background[0] / 255f, background[1] / 255f, background[2] / 255f },
+                    new float[]{ shadow[0]     / 255f, shadow[1]     / 255f, shadow[2]     / 255f },
+                    new float[]{ highlight[0]  / 255f, highlight[1]  / 255f, highlight[2]  / 255f }
+            );
+        }
+
+        public static Palette ofColor(Color background, Color shadow, Color highlight){
+            return new Palette(
+                    new float[]{ background.getRed() / 255f, background.getGreen() / 255f, background.getBlue() / 255f },
+                    new float[]{ shadow.getRed()     / 255f, shadow.getGreen()     / 255f, shadow.getBlue()     / 255f },
+                    new float[]{ highlight.getRed()  / 255f, highlight.getGreen()  / 255f, highlight.getBlue()  / 255f }
+            );
         }
     }
 }
