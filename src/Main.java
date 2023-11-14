@@ -20,7 +20,7 @@ public class Main {
     private final static double  SCALE = 2;
 
     //SCREEN
-    private final static double  WIDTH = 415*SCALE, HEIGHT = 120*SCALE; // Width and height of screen
+    private final static double PADDING = 20 * SCALE;
 
     // NUMBERS
     private final static boolean CUT_CORNERS = true; // Whether to cut outside corners
@@ -30,8 +30,8 @@ public class Main {
     private final static double  NUM_KERNING = 5*SCALE; // Distance between numbers
     private final static double  NUM_WIDTH = 50*SCALE, NUM_HEIGHT = 80*SCALE;
 
-    // COLORS
-    private final static Palette RED = Palette.ofNormalFloat(new float[]{ 0.15f, 0.1f, 0.1f }, new float[]{ 0.27f, 0.2f, 0.2f }, new float[]{ 1.f, 0.f, 0.32f });
+    // COLORS (BG, Shadow, Highlight)
+    private final static Palette RED = Palette.ofNormalFloat(new float[]{ 0.15f, 0.1f, 0.1f }, new float[]{ 0.3f, 0.15f, 0.15f }, new float[]{ 1.f, 0.f, 0.32f });
     private final static Palette GREEN = Palette.ofFloat(new float[]{ 24f, 37f, 24f }, new float[]{ 36f, 49f, 33f }, new float[]{ 173f, 225f, 163f });
     private final static Palette TECH_LIGHT_BLUE = Palette.ofFloat(new float[]{ 27f, 196f, 238f }, new float[]{ 62f, 205f, 240f }, new float[]{ 198f, 240f, 251f });
     private final static Palette TECH_DARK_BLUE = Palette.ofFloat(new float[]{ 3f, 31f, 38f }, new float[]{ 5f, 46f, 57f }, new float[]{ 64f, 206f, 242f });
@@ -43,7 +43,7 @@ public class Main {
     private final static Palette TEAL_AND_PINK = Palette.ofFloat(new float[]{ 30f, 65f, 65f }, new float[]{ 17f, 85f, 85f }, new float[]{ 255f, 90f, 239f });
     private final static Palette PURPLE_AND_BLUE = Palette.ofFloat(new float[]{ 39f, 5f, 36f }, new float[]{ 59f, 2f, 55f }, new float[]{ 80f, 254f, 254f });
 
-    private final static Palette CURRENT_PALETTE = PURPLE_AND_BLUE;
+    private final static Palette CURRENT_PALETTE = RED;
 
     // COLON
     private final static double   COLON_WIDTH = 10*SCALE;
@@ -69,6 +69,8 @@ public class Main {
     };
 
     private static final double CUT = (CUT_CORNERS)?THICKNESS/2.0:0;
+    private final static double  WIDTH = (NUM_WIDTH*6+NUM_KERNING*3+COLON_KERNING*4+COLON_WIDTH*2+PADDING*2),
+                                 HEIGHT = (NUM_HEIGHT+PADDING*2); // Width and height of screen
 
 
     public static void main(String[] args) {
@@ -234,7 +236,7 @@ public class Main {
 
             gl.glClearColor(CURRENT_PALETTE.background[0], CURRENT_PALETTE.background[1], CURRENT_PALETTE.background[2], 1.f);
             gl.glClear (GL2.GL_COLOR_BUFFER_BIT |  GL2.GL_DEPTH_BUFFER_BIT );
-            drawTime(gl, 20*SCALE, 20*SCALE);
+            drawTime(gl, PADDING, PADDING);
 
             gl.glFlush();
         }
